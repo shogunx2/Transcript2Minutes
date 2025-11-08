@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" data-color-scheme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Summarizer</title>
+    <style>
+        /* Design System */
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+
+            --color-gray-400-rgb: 119, 124, 124;
+            --color-teal-300-rgb: 50, 184, 198;
+            --color-gray-300-rgb: 167, 169, 169;
+            --color-gray-200-rgb: 245, 245, 245;
+
+            --color-background: var(--color-charcoal-700);
+            --color-surface: var(--color-charcoal-800);
+            --color-text: var(--color-gray-200);
+            --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+            --color-primary: var(--color-teal-300);
+            --color-primary-hover: var(--color-teal-400);
+            --color-primary-active: var(--color-teal-800);
+            --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+            --color-btn-primary-text: var(--color-slate-900);
+            --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --line-height-normal: 1.5;
+            --line-height-tight: 1.2;
+
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @font-face {
+            font-family: 'FKGroteskNeue';
+            src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        .app-header {
+            width: 100%;
+            height: 65px;
+            background-color: #181A1B;
+            border-bottom: 1px solid #2a2d30;
+            display: flex;
+            align-items: center;
+            padding: 0 var(--space-32);
+        }
+
+        .app-title {
+            font-size: 1.9rem;
+            font-weight: 550;
+            color: #E8EAED;
+            letter-spacing: 0.75px;
+            margin: 0;
+        }
+
+        .app-container {
+            display: flex;
+            height: calc(100vh - 65px);
+            padding: var(--space-24);
+            gap: var(--space-24);
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-32);
+            overflow: hidden;
+            transition: box-shadow var(--duration-normal) var(--ease-standard);
+        }
+
+        .panel:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .panel-header {
+            margin-bottom: var(--space-24);
+        }
+
+        .panel-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            line-height: var(--line-height-tight);
+        }
+
+        .panel-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            margin-top: var(--space-8);
+        }
+
+        .panel-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-16);
+            overflow: hidden;
+        }
+
+        .transcript-input {
+            flex: 1;
+            width: 100%;
+            padding: var(--space-16);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            resize: none;
+            outline: none;
+            transition: border-color var(--duration-normal) var(--ease-standard);
+        }
+
+        .transcript-input:focus {
+            border-color: var(--color-primary);
+        }
+
+        .transcript-input::placeholder {
+            color: var(--color-text-secondary);
+        }
+
+        .attach-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-12) var(--space-24);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-btn-primary-text);
+            background-color: var(--color-primary);
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            gap: var(--space-8);
+        }
+
+        .attach-button:hover {
+            background-color: var(--color-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .attach-button:active {
+            background-color: var(--color-primary-active);
+            transform: translateY(0);
+        }
+
+        .attach-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .summary-output {
+            flex: 1;
+            width: 100%;
+            padding: var(--space-16);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+            color: var(--color-text-secondary);
+            background-color: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            overflow-y: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .app-header {
+                padding: 0 var(--space-16);
+            }
+
+            .app-title {
+                font-size: 1.5rem;
+            }
+
+            .app-container {
+                flex-direction: column;
+                padding: var(--space-16);
+                gap: var(--space-16);
+            }
+
+            .panel {
+                padding: var(--space-20);
+                min-height: 45vh;
+            }
+
+            .panel-title {
+                font-size: var(--font-size-lg);
+            }
+        }
+
+        /* Custom scrollbar */
+        .summary-output::-webkit-scrollbar,
+        .transcript-input::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .summary-output::-webkit-scrollbar-track,
+        .transcript-input::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .summary-output::-webkit-scrollbar-thumb,
+        .transcript-input::-webkit-scrollbar-thumb {
+            background: rgba(var(--color-gray-400-rgb), 0.5);
+            border-radius: 4px;
+        }
+
+        .summary-output::-webkit-scrollbar-thumb:hover,
+        .transcript-input::-webkit-scrollbar-thumb:hover {
+            background: rgba(var(--color-gray-400-rgb), 0.7);
+        }
+
+        /* File input hidden */
+        .file-input {
+            display: none;
+        }
+
+        /* Error message */
+        .error-message {
+            padding: var(--space-12) var(--space-16);
+            background-color: rgba(255, 84, 89, 0.15);
+            color: var(--color-red-400);
+            border: 1px solid rgba(255, 84, 89, 0.25);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            animation: slideIn 0.3s var(--ease-standard);
+        }
+
+        /* Word counter */
+        .word-counter {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            margin-top: var(--space-8);
+            text-align: right;
+            transition: color var(--duration-normal) var(--ease-standard);
+        }
+
+        .word-counter.over-limit {
+            color: var(--color-red-400);
+            font-weight: var(--font-weight-medium);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading state */
+        .attach-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Summarize button */
+        .summarize-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-12) var(--space-24);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            color: #FFFFFF;
+            background-color: #43A047;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            gap: var(--space-8);
+            margin-top: var(--space-12);
+        }
+
+        .summarize-button:hover:not(:disabled) {
+            background-color: #388E3C;
+            transform: translateY(-1px);
+        }
+
+        .summarize-button:active:not(:disabled) {
+            background-color: #2E7D32;
+            transform: translateY(0);
+        }
+
+        .summarize-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #43A047;
+        }
+
+        .summarize-icon {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-title">Transcript2Minutes</h1>
+        </header>
+
+        <!-- Main Content -->
+        <div class="app-container">
+        <!-- Left Panel: Input -->
+        <div class="panel">
+            <div class="panel-header">
+                <h1 class="panel-title">Meeting Transcript</h1>
+                <p class="panel-subtitle">Paste or type your transcript below</p>
+            </div>
+            <div class="panel-content">
+                <div v-if="errorMessage" class="error-message">
+                    {{ errorMessage }}
+                </div>
+                <textarea 
+                    v-model="transcript"
+                    class="transcript-input" 
+                    placeholder="Paste or type meeting transcript here..."
+                    spellcheck="false"
+                    @input="handleTextInput"
+                ></textarea>
+                <div class="word-counter" :class="{ 'over-limit': isOverLimit }">
+                    {{ wordCount }} / 4000 words
+                </div>
+                <input 
+                    ref="fileInput"
+                    type="file" 
+                    class="file-input"
+                    accept=".txt,.pdf,.doc,.docx"
+                    @change="handleFileSelect"
+                />
+                <button 
+                    class="attach-button"
+                    @click="triggerFileInput"
+                    :disabled="isProcessing"
+                >
+                    <svg class="attach-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                    </svg>
+                    {{ isProcessing ? 'Processing...' : 'Attach File' }}
+                </button>
+                <button 
+                    class="summarize-button"
+                    @click="handleSummarize"
+                    :disabled="!canSummarize || isSummarizing"
+                >
+                    <svg class="summarize-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    {{ isSummarizing ? 'Processing...' : 'Summarize' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Panel: Output -->
+        <div class="panel">
+            <div class="panel-header">
+                <h1 class="panel-title">Summary</h1>
+                <p class="panel-subtitle">AI-generated summary will appear here</p>
+            </div>
+            <div class="panel-content">
+                <div class="summary-output">
+                    {{ summaryText }}
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const transcript = ref('');
+                const summaryText = ref('Summary will appear here...');
+                const errorMessage = ref('');
+                const isProcessing = ref(false);
+                const fileInput = ref(null);
+                const wordCount = ref(0);
+                const isOverLimit = ref(false);
+                const isSummarizing = ref(false);
+                const canSummarize = ref(false);
+                const WORD_LIMIT = 4000;
+
+                // Configure PDF.js worker
+                if (typeof pdfjsLib !== 'undefined') {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                }
+
+                const triggerFileInput = () => {
+                    fileInput.value.click();
+                };
+
+                const clearError = () => {
+                    errorMessage.value = '';
+                };
+
+                const countWords = (text) => {
+                    if (!text || text.trim() === '') return 0;
+                    const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+                    return words.length;
+                };
+
+                const updateWordCount = (text) => {
+                    wordCount.value = countWords(text);
+                    isOverLimit.value = wordCount.value > WORD_LIMIT;
+                    // Update canSummarize based on text presence and word limit
+                    canSummarize.value = text.trim().length > 0 && !isOverLimit.value;
+                };
+
+                const handleTextInput = () => {
+                    updateWordCount(transcript.value);
+                    
+                    if (isOverLimit.value) {
+                        showError('Text exceeds 4000 word limit. Please shorten your input.');
+                    } else {
+                        clearError();
+                    }
+                };
+
+                const showError = (message) => {
+                    errorMessage.value = message;
+                    setTimeout(() => {
+                        errorMessage.value = '';
+                    }, 5000);
+                };
+
+                const handleFileSelect = async (event) => {
+                    clearError();
+                    const file = event.target.files[0];
+                    
+                    if (!file) return;
+
+                    // Get file extension
+                    const fileName = file.name.toLowerCase();
+                    const extension = fileName.substring(fileName.lastIndexOf('.'));
+
+                    // Validate file type
+                    const validExtensions = ['.txt', '.pdf', '.doc', '.docx'];
+                    if (!validExtensions.includes(extension)) {
+                        showError('Unsupported file type. Please use .txt, .pdf, .doc, or .docx files.');
+                        fileInput.value.value = ''; // Clear the file input
+                        return;
+                    }
+
+                    isProcessing.value = true;
+
+                    try {
+                        if (extension === '.txt') {
+                            await handleTextFile(file);
+                        } else if (extension === '.pdf') {
+                            await handlePdfFile(file);
+                        } else if (extension === '.doc' || extension === '.docx') {
+                            handleDocFile();
+                        }
+                    } catch (error) {
+                        showError(`Error processing file: ${error.message}`);
+                    } finally {
+                        isProcessing.value = false;
+                        // Immediately discard file reference
+                        fileInput.value.value = '';
+                    }
+                };
+
+                const handleTextFile = (file) => {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        
+                        reader.onload = (e) => {
+                            const extractedText = e.target.result;
+                            const count = countWords(extractedText);
+                            
+                            if (count > WORD_LIMIT) {
+                                showError(`Text exceeds 4000 word limit. Please shorten your input. Current count: ${count} words.`);
+                                reject(new Error('Word limit exceeded'));
+                            } else {
+                                transcript.value = extractedText;
+                                updateWordCount(extractedText);
+                                resolve();
+                            }
+                        };
+                        
+                        reader.onerror = () => {
+                            reject(new Error('Failed to read text file'));
+                        };
+                        
+                        reader.readAsText(file);
+                    });
+                };
+
+                const handlePdfFile = async (file) => {
+                    if (typeof pdfjsLib === 'undefined') {
+                        showError('PDF processing library not loaded. Please refresh the page.');
+                        return;
+                    }
+
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                        let fullText = '';
+
+                        // Extract text from all pages
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            fullText += pageText + '\n\n';
+                        }
+
+                        if (fullText.trim()) {
+                            const extractedText = fullText.trim();
+                            const count = countWords(extractedText);
+                            
+                            if (count > WORD_LIMIT) {
+                                showError(`Text exceeds 4000 word limit. Please shorten your input. Current count: ${count} words.`);
+                            } else {
+                                transcript.value = extractedText;
+                                updateWordCount(extractedText);
+                            }
+                        } else {
+                            showError('No text found in PDF. The PDF might be image-based.');
+                        }
+                    } catch (error) {
+                        showError('Failed to extract text from PDF. The file might be corrupted or encrypted.');
+                    }
+                };
+
+                const handleDocFile = () => {
+                    showError('Microsoft Word files (.doc/.docx) are not supported. Please convert to .txt or .pdf format and try again.');
+                };
+
+                const handleSummarize = async () => {
+                    if (!canSummarize.value || isSummarizing.value) return;
+                    
+                    isSummarizing.value = true;
+                    clearError();
+                    summaryText.value = 'Generating summary...';
+
+                    try {
+                        // Make actual API call to backend
+                        const response = await fetch('http://localhost:5002/summarize', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                transcript: transcript.value
+                            })
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to generate summary');
+                        }
+
+                        const data = await response.json();
+                        summaryText.value = data.minutes || data.summary || 'Summary generated successfully';
+                    } catch (error) {
+                        summaryText.value = 'Error generating summary. Please try again.';
+                        showError(error.message || 'Failed to generate summary. Please try again.');
+                    } finally {
+                        isSummarizing.value = false;
+                    }
+                };
+
+                return {
+                    transcript,
+                    summaryText,
+                    errorMessage,
+                    isProcessing,
+                    fileInput,
+                    wordCount,
+                    isOverLimit,
+                    isSummarizing,
+                    canSummarize,
+                    triggerFileInput,
+                    handleFileSelect,
+                    handleTextInput,
+                    handleSummarize
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

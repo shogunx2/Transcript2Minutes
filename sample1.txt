@@ -1,0 +1,20 @@
+Meeting: Product Roadmap Review
+Participants: Emily (Product Manager), David (Tech Lead), Sarah (Designer), Marcus (QA)
+Date: November 5, 2025
+Duration: 30 minutes
+
+Emily: Good morning everyone. Today we're reviewing our upcoming product roadmap for the next quarter. Let's start with the new features. David, can you give us an update on the mobile app redesign?
+
+David: Absolutely. We've made significant progress on the mobile interface. The new design reduces load time by 35%, and we've implemented dark mode support. We estimate completion by end of next week. The backend API changes are already 80% complete.
+
+Sarah: That's great news David. The UI mockups have been well-received by our beta users. They particularly like the simplified navigation. I'd like to propose we also add accessibility features for users with visual impairments. This would take about two weeks of additional work.
+
+Marcus: I'm ready to start testing the mobile app. We should plan for a two-week QA cycle. I'll need the final build by November 15th to ensure we have time for comprehensive testing and bug fixes before the release.
+
+Emily: Excellent. So our timeline is: mobile build ready by November 15th, QA testing through end of November, and we can launch in early December. Sarah, can you confirm the accessibility features timeline?
+
+Sarah: Yes, we can integrate them during the QA phase. It won't delay anything.
+
+Emily: Perfect. One more thing - we need to prioritize a security audit before launch. Let's schedule that for December. Any other concerns? No? Great. Let's reconvene next week to discuss marketing strategy and launch planning. Thanks everyone.
+
+All: Sounds good.

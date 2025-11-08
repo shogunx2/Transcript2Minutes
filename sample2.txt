@@ -1,0 +1,20 @@
+Meeting: Q4 Sales Strategy Discussion
+Participants: Rachel (Sales Director), Tom (Account Manager), Lisa (Marketing Lead), James (Operations)
+Date: November 5, 2025
+Duration: 45 minutes
+
+Rachel: Good afternoon everyone. Let's discuss our Q4 sales strategy and targets. Tom, can you give us an overview of our current pipeline?
+
+Tom: Absolutely. We have 25 active prospects in the pipeline. Of those, 8 are in final negotiations and likely to close this month. Our forecast is looking strong - we're tracking at 120% of our Q3 numbers. However, we need to focus on enterprise deals. The mid-market segment is slowing down.
+
+Lisa: Great pipeline update Tom. From marketing's side, we just launched the new campaign targeting enterprise customers. Early metrics show a 35% increase in qualified leads compared to last month. We're also planning a webinar series for late November.
+
+James: I need to flag something on operations. Our current infrastructure can handle maybe 40% more customers before we hit capacity limits. If we want to scale aggressively in Q4, we need to plan infrastructure upgrades now. That's a 2-3 week implementation.
+
+Rachel: Good catch James. Let's prioritize that infrastructure work. Tom, what's our realistic Q4 close rate if James completes the upgrades?
+
+Tom: If we get the infrastructure ready by mid-November, I'm confident we can close another 12-15 deals. That would put us at 35-40 closed deals for Q4, which is excellent.
+
+Rachel: Perfect. Here's the plan: James, start infrastructure upgrades immediately. Tom, prioritize the 8 near-close deals. Lisa, keep the webinar campaign going. Let's reconvene next week with updates. Great work everyone.
+
+All: Thanks.
